@@ -12,4 +12,7 @@ export class UserDto {
     @IsNotEmpty() 
     password: string 
 
+    @IsNotEmpty()
+    interests: []
+
 }

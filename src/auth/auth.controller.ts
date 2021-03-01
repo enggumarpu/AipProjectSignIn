@@ -1,8 +1,11 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { UserDto } from './dto/register.dto';
 import { Response, Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './getuser.decorator';
+import { User } from './user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -18,14 +21,37 @@ export class AuthController {
     async userLogin(@Body() loginDto: LoginDto, @Res({passthrough: true}) response: Response){
         return this.authService.userLogin(loginDto, response)
     }
-    @Post('logout')
-    async userLogout(@Res({passthrough: true}) response: Response){
-        return this.authService.userLogout(response);
+
+    @Post('test')
+    @UseGuards(AuthGuard())
+    async test(@Req() request: Request){
+        console.log(request.user);
     }
 
     @Get('user')
-    async getUser(@Req() request: Request){
-        return this.authService.getUser(request);
+    @UseGuards(AuthGuard())
+    async getUser(@GetUser() user: User){
+        return user;
     }
+
+
+
+
+
+
+
+
+
+
+
+    // @Post('logout')
+    // async userLogout(@Res({passthrough: true}) response: Response){
+    //     return this.authService.userLogout(response);
+    // }
+
+    // @Get('user')
+    // async getUser(@Req() request: Request){
+    //     return this.authService.getUser(request);
+    // }
 
 }
